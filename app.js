@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 
+app.use(express.urlencoded({ extended: false })); // Apenas dados simples
+app.use(express.json());
+
 const rotaProdutos = require('./routes/produtos');
 const rotaPedidos = require('./routes/pedidos');
 
