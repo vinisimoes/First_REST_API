@@ -52,9 +52,10 @@ router.post('/', (req, res, next) => {
             [req.body.id_produto],
             (error, result, fields) => {
                 conn.release();
+
                 if (error) { return res.status(500).send({ error: error }) }
+
                 if (result.length == 0) {
-                    conn.release();
                     return res.status(404).send({ mensagem: 'Produto não encontrado' })
                 }
 

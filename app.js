@@ -22,9 +22,11 @@ app.use((req, res, next) => {
 
 const rotaProdutos = require('./routes/produtos');
 const rotaPedidos = require('./routes/pedidos');
+const rotaUsuarios = require('./routes/usuarios');
 
 app.use('/produtos', rotaProdutos);
 app.use('/pedidos', rotaPedidos);
+app.use('/usuarios', rotaUsuarios);
 
 // QUANDO NAO ENCONTRA ROTA
 app.use((req, res, next) => {
