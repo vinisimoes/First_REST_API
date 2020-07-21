@@ -30,4 +30,7 @@ router.patch('/', login.obrigatorio, upload.single('imagem_produto'), ProdutosCo
 // EXCLUI UM PRODUTO
 router.delete('/', login.obrigatorio, ProdutosController.deleteProduto);
 
+// RETORNA IMAGEM DE UM PRODUTO
+router.get('/:id_produto/imagem', ProdutosController.getImagemProduto);
+
 module.exports = router;

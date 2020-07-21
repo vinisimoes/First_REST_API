@@ -1,4 +1,6 @@
 const mysql = require('../mysql');
+//const { response } = require('express');
+const path = require('path');
 
 exports.getProdutos = async (req, res, next) => {
     try {
@@ -10,7 +12,7 @@ exports.getProdutos = async (req, res, next) => {
                     id_produto: produto.id_produto,
                     nome: produto.nome,
                     preco: produto.preco,
-                    imagem_produto: produto.imagem_produto,
+                    imagem_produto: process.env.URL_PRODUTOS + produto.id_produto + '/imagem',
                     url_detalhes: process.env.URL_PRODUTOS + produto.id_produto,
                 }
             }),
@@ -29,6 +31,7 @@ exports.postProduto = async (req, res, next) => {
     try {
         const query = "INSERT INTO produtos (nome, preco, imagem_produto) VALUES (?, ?, ?);";
         const result = await mysql.execute(query, [req.body.nome, req.body.preco, req.file.path]);
+
         const response = {
             mensagem: 'Produto inserido com sucesso',
             produtoCriado: {
@@ -46,7 +49,7 @@ exports.postProduto = async (req, res, next) => {
     } catch (error) {
         return res.status(500).send({ error: error })
     }
-}
+};
 
 exports.getUmProduto = async (req, res, next) => {
     try {
@@ -58,7 +61,7 @@ exports.getUmProduto = async (req, res, next) => {
                 id_produto: result[0].id_produto,
                 nome: result[0].nome,
                 preco: result[0].preco,
-                imagem_produto: result[0].imagem_produto
+                imagem_produto: process.env.URL_PRODUTOS + result[0].id_produto + '/imagem'
             },
             request: {
                 tipo: 'GET',
@@ -85,7 +88,7 @@ exports.alteraProduto = async (req, res, next) => {
                 id_produto: req.body.id_produto,
                 nome: req.body.nome,
                 preco: req.body.preco,
-                imagem_produto: req.file.path
+                imagem_produto: process.env.URL_PRODUTOS + req.body.id_produto + '/imagem'
             },
             request: {
                 tipo: 'PATCH',
@@ -111,6 +114,17 @@ exports.deleteProduto = async (req, res, next) => {
             }
         }
         return res.status(202).send(response);
+    } catch (error) {
+        return res.status(500).send({ error: error })
+    }
+};
+
+exports.getImagemProduto = async (req, res, next) => {
+    try {
+        const query = "SELECT * FROM produtos WHERE id_produto = ?;";
+        const result = await mysql.execute(query, [req.params.id_produto]);
+        if (result.length == 0) { return res.status(404).send({ mensagem: 'Produto não encontrado' }) }
+        return res.status(200).sendFile(path.resolve(result[0].imagem_produto));
     } catch (error) {
         return res.status(500).send({ error: error })
     }
